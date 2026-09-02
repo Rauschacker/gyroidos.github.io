@@ -85,8 +85,8 @@ sudo debootstrap bookworm "${ROOTFS_DIR}" "http://deb.debian.org/debian"
 
 # Create tar archive of rootfs
 print "Creating tar archive of rootfs"
-sudo tar -cf "${GUEST_NAME}.tar" -C "${ROOTFS_DIR}" .
-mkdir -p rootfs
+sudo tar --owner=0 --group=0 --numeric-owner -cf "${GUEST_NAME}.tar" -C "${ROOTFS_DIR}" .
+sudo mkdir -p rootfs
 mv "${GUEST_NAME}.tar" rootfs/"${GUEST_NAME}os.tar"
 
 # Build the guest OS
@@ -119,6 +119,8 @@ if [ ! -f "${INSTALL_PATH}/${GUEST_NAME}os-1/root.img" ]; then
 	echo "root.img does not exist!"
 	exit 1
 fi
+
+sudo systemctl restart cmld
 
 # Installing operating system
 print "Installing operating system"
